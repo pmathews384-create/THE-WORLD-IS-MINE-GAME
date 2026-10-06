@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The World Is Mine - Number Hunt</title>
+<style>
+  body {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+  .game-box {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+  h1 { 
+    color: #FFD700; 
+    margin: 0;
+    letter-spacing: 2px;
+  }
+  .subtitle { color: #ccc; margin-bottom: 20px; font-style: italic; }
+  input {
+    width: 80%;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    font-size: 20px;
+    text-align: center;
+    margin: 15px 0;
+    outline: none;
+  }
+  button {
+    background: #FFD700;
+    color: #000;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover { transform: scale(1.05); background: white; }
+  #message { margin-top: 20px; font-size: 18px; min-height: 50px; }
+  .lives { color: #FF6B6B; font-weight: bold; }
+  .win { color: #4ECDC4; font-size: 22px; font-weight: bold; }
+  .hint { color: #FFD700; }
+</style>
+</head>
+<body>
+
+<div class="game-box">
+  <h1>THE WORLD IS MINE</h1>
+  <p class="subtitle">think smart, guess right, win big</p>
+  <hr style="opacity:0.2">
+  <p>I have chosen a number between <b>1 and 100</b></p>
+  <p class="lives" id="lives">Lives left: 7</p>
+  
+  <input type="number" id="guessInput" placeholder="Enter your guess">
+  <br>
+  <button onclick="checkGuess()">GUESS</button>
+  <button onclick="resetGame()" style="background:#555; color:white; margin-left:10px">RESET</button>
+  
+  <div id="message">Good luck! Make your first guess.</div>
+  <p id="attempts" style="opacity:0.6; margin-top:15px"></p>
+</div>
+
+<script>
+  let secret = Math.floor(Math.random() * 100) + 1;
+  let attempts = 0;
+  let maxAttempts = 7;
+
+  function checkGuess() {
+    let guess = parseInt(document.getElementById("guessInput").value);
+    let msg = document.getElementById("message");
+    
+    if (!guess) { msg.innerHTML = "Please enter a number!"; return; }
+    
+    attempts++;
+    let livesLeft = maxAttempts - attempts;
+    document.getElementById("lives").innerText = "Lives left: " + livesLeft;
+    document.getElementById("attempts").innerText = "Attempts: " + attempts;
+
+    if (guess === secret) {
+      msg.innerHTML = `<span class="win">🎉 CONGRATULATIONS!<br>You guessed ${secret} in ${attempts} tries!<br>${attempts<=3?'Rank: GENIUS 🧠': attempts<=5?'Rank: SMART 💡':'Rank: WINNER 🏆'}</span>`;
+      document.getElementById("lives").innerText = "YOU WON!";
+    } else if (attempts >= maxAttempts) {
+      msg.innerHTML = `💀 GAME OVER<br>The number was <b>${secret}</b><br>The world is not yours today!`;
+    } else if (guess < secret) {
+      let close = (secret - guess <= 5) ? "<br><span class='hint'>🔥 Very close!</span>" : "";
+      msg.innerHTML = `📉 Too LOW! Try higher ${close}`;
+    } else {
+      let close = (guess - secret <= 5) ? "<br><span class='hint'>🔥 Very close!</span>" : "";
+      msg.innerHTML = `📈 Too HIGH! Try lower ${close}`;
+    }
+    document.getElementById("guessInput").value = "";
+  }
+
+  function resetGame() {
+    secret = Math.floor(Math.random() * 100) + 1;
+    attempts = 0;
+    document.getElementById("lives").innerText = "Lives left: 7";
+    document.getElementById("attempts").innerText = "";
+    document.getElementById("message").innerText = "New game started! Guess again.";
+    document.getElementById("guessInput").value = "";
+  }
+</script>
+
+</body>
+</html>
